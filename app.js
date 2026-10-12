@@ -313,11 +313,11 @@ function chooseGender() {
             <p class="muted">Мужские и женские имена оцениваются отдельно.</p>
             <div class="gender-grid">
                 <button class="gender-option" id="boy-option">
-                    <span class="emoji">👶🏻</span>
+                    <img class="gender-photo" src="assets/baby-boy.png" alt="Малыш в голубом костюме">
                     <strong>Мальчик</strong><br><small>${names.boy.length} имён</small>
                 </button>
                 <button class="gender-option" id="girl-option">
-                    <span class="emoji">🎀</span>
+                    <img class="gender-photo" src="assets/baby-girl.png" alt="Малышка с розовым бантом">
                     <strong>Девочка</strong><br><small>${names.girl.length} имён</small>
                 </button>
             </div>
@@ -377,6 +377,8 @@ function showCard() {
     const total = names[gender].length;
     const done = total - currentNames.length + currentIndex;
     const isGirl = gender === "girl";
+    const babyPhoto = isGirl ? "assets/baby-girl.png" : "assets/baby-boy.png";
+    const babyAlt = isGirl ? "Малышка с розовым бантом" : "Малыш в голубом костюме";
 
     screen.innerHTML = `
         <div class="game-heading">${isGirl ? "Имена для девочки 🎀" : "Имена для мальчика 🧸"}</div>
@@ -385,8 +387,9 @@ function showCard() {
 
         <div class="name-stage">
             <div class="name-card" id="name-card">
+                <img class="name-card-photo" src="${babyPhoto}" alt="${babyAlt}">
                 <span class="name-decoration">${isGirl ? "🌸" : "☁️"}</span>
-                <span>${escapeHtml(name)}</span>
+                <span class="name-title">${escapeHtml(name)}</span>
                 <span class="name-caption">Представь, как вы будете<br>звать этим именем малыша</span>
                 <span class="swipe-hint">Свайпни влево или вправо</span>
                 <span class="swipe-stamp stamp-like">НРАВИТСЯ</span>
@@ -535,7 +538,7 @@ async function showResults() {
             ? `<div class="match-grid">
                 ${mutual.map((item, index) => `
                     <div class="match-name-card" style="animation-delay:${index * 70}ms">
-                        <span class="match-name-emoji">${isGirl ? "🌸" : "🧸"}</span>
+                        <img class="match-name-photo" src="${isGirl ? "assets/baby-girl.png" : "assets/baby-boy.png"}" alt="">
                         <strong>${escapeHtml(item.name)}</strong>
                         <small>Нравится вам обоим</small>
                     </div>`).join("")}

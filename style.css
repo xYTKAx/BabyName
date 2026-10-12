@@ -258,7 +258,16 @@ input::placeholder, textarea::placeholder { color: #aaa3b0; }
 
 .gender-option:first-child { background: linear-gradient(145deg, #f0f5ff, #fff); }
 .gender-option:last-child { background: linear-gradient(145deg, #fff0f5, #fff); }
-.gender-option .emoji { display: block; font-size: 42px; margin-bottom: 10px; }
+.gender-photo {
+    display: block;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 10px;
+    border: 3px solid rgba(255,255,255,.88);
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 5px 13px rgba(75,45,90,.16);
+}
 .gender-option.selected { border-color: #f47a9b; box-shadow: 0 0 0 4px rgba(244,122,155,.12); }
 
 /* Карточки имён */
@@ -328,6 +337,7 @@ input::placeholder, textarea::placeholder { color: #aaa3b0; }
 
 .name-card {
     position: relative;
+    isolation: isolate;
     z-index: 1;
     width: 100%;
     min-height: 330px;
@@ -353,6 +363,24 @@ input::placeholder, textarea::placeholder { color: #aaa3b0; }
     -webkit-user-select: none;
     cursor: grab;
     transition: transform .22s ease, opacity .22s ease;
+}
+
+.name-card-photo {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .28;
+}
+
+.name-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.54), rgba(255,255,255,.85));
 }
 
 .name-card:active { cursor: grabbing; }
@@ -580,10 +608,15 @@ input::placeholder, textarea::placeholder { color: #aaa3b0; }
     font-size: 12px;
 }
 
-.match-name-card .match-name-emoji {
+.match-name-photo {
     display: block;
-    margin-bottom: 7px;
-    font-size: 21px;
+    width: 45px;
+    height: 45px;
+    margin: 0 auto 7px;
+    border: 2px solid rgba(255,255,255,.92);
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 11px rgba(75,45,90,.12);
 }
 
 .match-name-card strong {
