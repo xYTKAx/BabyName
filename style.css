@@ -1,0 +1,457 @@
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --pink: #f34f78;
+    --pink-light: #ffe6ed;
+    --ink: #292337;
+    --muted: #898392;
+    --surface: #ffffff;
+}
+
+html {
+    min-height: 100%;
+    background: #fff4f6;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-width: 280px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background:
+        radial-gradient(ellipse at 0% 0%, #ffe0ec, transparent 52%),
+        radial-gradient(ellipse at 100% 100%, #f4e5ff, transparent 55%),
+        linear-gradient(145deg, #fff7f4, #f8efff);
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition:
+        transform 0.16s ease,
+        opacity 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+button:active {
+    transform: scale(0.975);
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.app {
+    width: 100%;
+    max-width: 460px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding:
+        max(20px, env(safe-area-inset-top))
+        20px
+        max(18px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+}
+
+.top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 24px;
+    flex-shrink: 0;
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 28px;
+    background: linear-gradient(135deg, #ff7799, #f34f78);
+    box-shadow: 0 8px 22px #f34f7838;
+}
+
+.top h1 {
+    margin: 0 0 3px;
+    font-size: 25px;
+    line-height: 1.15;
+    letter-spacing: -0.7px;
+}
+
+.top p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+#screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 4vh;
+    min-height: 0;
+}
+
+.panel {
+    width: 100%;
+    padding: 23px;
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 26px;
+    box-shadow: 0 16px 45px #4b2d5a12;
+    animation: appear 0.28s ease both;
+}
+
+.panel h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+}
+
+.panel p {
+    line-height: 1.5;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.primary,
+.secondary {
+    display: block;
+    width: 100%;
+    min-height: 54px;
+    padding: 15px 18px;
+    border-radius: 17px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+.primary {
+    color: white;
+    background: linear-gradient(100deg, #ff688d, #ed4775);
+    box-shadow: 0 8px 18px #ed47752b;
+}
+
+.primary:active {
+    box-shadow: 0 4px 10px #ed47752b;
+}
+
+.secondary {
+    background: var(--pink-light);
+    color: #d63d67;
+}
+
+input,
+textarea {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 15px;
+    margin: 9px 0;
+    border: 1px solid #eee3eb;
+    border-radius: 15px;
+    background: white;
+    color: var(--ink);
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #f47a9b;
+    box-shadow: 0 0 0 3px #f47a9b20;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #aaa3b0;
+}
+
+.code {
+    padding: 20px 12px;
+    text-align: center;
+    font-size: clamp(28px, 8vw, 36px);
+    font-weight: 800;
+    letter-spacing: 5px;
+    border-radius: 20px;
+    background: #fff0f4;
+    color: var(--pink);
+    margin: 18px 0;
+    overflow-wrap: anywhere;
+}
+
+.gender-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.gender-option {
+    min-width: 0;
+    padding: 20px 8px;
+    border: 2px solid transparent;
+    border-radius: 21px;
+    background: white;
+    box-shadow: 0 8px 22px #4b2d5a0b;
+    color: var(--ink);
+}
+
+.gender-option .emoji {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.gender-option.selected {
+    border-color: #7aa8ff;
+    background: #eef4ff;
+}
+
+.name-stage {
+    position: relative;
+    width: 100%;
+    min-height: 290px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.name-card {
+    width: 100%;
+    min-height: 290px;
+    padding: 24px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+    border-radius: 30px;
+    background: linear-gradient(150deg, #ffffff, #fff6f8);
+    box-shadow: 0 20px 45px #4b2d5a17;
+    font-size: clamp(32px, 9vw, 44px);
+    line-height: 1.2;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+    transition:
+        transform 0.22s ease,
+        opacity 0.22s ease;
+}
+
+.name-card small {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--muted);
+    margin-top: 13px;
+}
+
+.name-card.out-left {
+    transform: translateX(-125%) rotate(-18deg);
+    opacity: 0;
+}
+
+.name-card.out-right {
+    transform: translateX(125%) rotate(18deg);
+    opacity: 0;
+}
+
+.name-card.dragging {
+    transition: none;
+}
+
+.vote-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.vote-button {
+    height: 60px;
+    min-width: 0;
+    border-radius: 20px;
+    font-size: 27px;
+    box-shadow: 0 8px 22px #4b2d5a0c;
+}
+
+.no {
+    background: #ffe5eb;
+    color: #ec5276;
+}
+
+.skip {
+    background: white;
+    color: #777181;
+}
+
+.yes {
+    background: #d8f8e9;
+    color: #16a56a;
+}
+
+.progress {
+    height: 6px;
+    background: #eadfe8;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 15px 3px 18px;
+}
+
+.progress > div {
+    height: 100%;
+    background: var(--pink);
+    border-radius: inherit;
+    transition: width 0.25s ease;
+}
+
+.name-list {
+    padding: 0;
+    margin: 16px 0;
+    list-style: none;
+}
+
+.name-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid #f0e8ef;
+    gap: 12px;
+}
+
+.name-list li strong {
+    overflow-wrap: anywhere;
+}
+
+.badge {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    border-radius: 12px;
+    background: #ffe6ed;
+    color: #d63d67;
+    font-size: 12px;
+}
+
+.member {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    background: var(--pink-light);
+    border-radius: 15px;
+    font-size: 21px;
+}
+
+.error {
+    color: #c52e52;
+    background: #fff0f3;
+    padding: 12px;
+    border-radius: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+
+.loading {
+    color: var(--muted);
+    text-align: center;
+    padding: 20px;
+}
+
+.footer {
+    text-align: center;
+    color: #9a91a0;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 18px 0 0;
+    flex-shrink: 0;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-height: 700px) {
+    .top {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+
+    #screen {
+        padding-bottom: 0;
+    }
+
+    .name-card,
+    .name-stage {
+        min-height: 240px;
+    }
+
+    .panel {
+        padding: 19px;
+    }
+
+    .footer {
+        margin-top: 12px;
+    }
+}
+
+@media (min-width: 600px) {
+    .app {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
