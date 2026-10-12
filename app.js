@@ -387,7 +387,9 @@ function enableSwipe(card) {
         dragging = false;
         card.classList.remove("dragging");
         card.style.transform = "";
-        if (Math.abs(dx) > 90) castVote(dx > 0 ? 1 : -1, dx > 0 ? "right" : "left");
+        if (Math.abs(dx) > 90) {
+            castVote(dx > 0 ? 1 : -1, dx > 0 ? "right" : "left");
+        }
         dx = 0;
     };
 
@@ -426,6 +428,8 @@ async function castVote(choice, direction) {
 }
 
 async function showResults() {
+    if (busy) return;
+
     try {
         const { data, error } = await db
             .from("votes")
@@ -433,42 +437,120 @@ async function showResults() {
             .eq("room_id", room.id);
         if (error) throw error;
 
-        const genderVotes = data.filter(vote => vote.gender === gender);
         const allNames = names[gender];
+        const genderVotes = data.filter(vote => vote.gender === gender);
+
         const results = allNames.map(name => {
-            const mine = genderVotes.find(v => v.name === name && v.user_id === sessionUser.id);
-            const partner = genderVotes.find(v => v.name === name && v.user_id !== sessionUser.id);
-            return { name, mine: mine?.choice, partner: partner?.choice };
+            const mine = genderVotes.find(
+                vote => vote.name === name && vote.user_id === sessionUser.id
+            );
+            const partner = genderVotes.find(
+                vote => vote.name === name && vote.user_id !== sessionUser.id
+            );
+            return {
+                name,
+                mine: mine?.choice,
+                partner: partner?.choice
+            };
         }).sort((a, b) => {
-            const score = item => (item.mine === 1 ? 1 : 0) + (item.partner === 1 ? 1 : 0);
-            return score(b) - score(a);
+            const score = item =>
+                (item.mine === 1 ? 1 : 0) +
+                (item.partner === 1 ? 1 : 0);
+
+            return score(b) - score(a) ||
+                allNames.indexOf(a.name) - allNames.indexOf(b.name);
         });
+
+        const mutualCount = results.filter(
+            item => item.mine === 1 && item.partner === 1
+        ).length;
+
+        const myLikes = results.filter(item => item.mine === 1).length;
+        const partnerLikes = results.filter(item => item.partner === 1).length;
+        const ratedCount = results.filter(
+            item => item.mine !== undefined
+        ).length;
 
         screen.innerHTML = `
             <section class="panel">
                 <h2>Ваши фавориты ❤️</h2>
-                <p class="muted">Пока показываем результаты по ${gender === "boy" ? "мужским" : "женским"} именам.</p>
+                <p class="muted">
+                    ${gender === "boy" ? "Мужские" : "Женские"} имена ·
+                    Совпадений: <strong>${mutualCount}</strong>
+                </p>
+
+                <div class="member">
+                    <div class="avatar">💗</div>
+                    <div>
+                        <strong>${myLikes}</strong><br>
+                        <span class="muted">
+                            Твои лайки · оценено ${ratedCount} из ${allNames.length}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="member">
+                    <div class="avatar">💜</div>
+                    <div>
+                        <strong>${partnerLikes}</strong><br>
+                        <span class="muted">Лайки партнёра</span>
+                    </div>
+                </div>
+
                 <ul class="name-list">
                     ${results.map(item => {
                         const both = item.mine === 1 && item.partner === 1;
                         const mineOnly = item.mine === 1 && item.partner !== 1;
                         const partnerOnly = item.partner === 1 && item.mine !== 1;
-                        let label = both ? "Оба ❤️" : mineOnly ? "Твой выбор" : partnerOnly ? "Выбор партнёра" : item.mine === undefined && item.partner === undefined ? "Не оценено" : "Пока нет совпадения";
-                        return `<li><strong>${escapeHtml(item.name)}</strong><span class="badge">${label}</span></li>`;
+                        const notRated =
+                            item.mine === undefined &&
+                            item.partner === undefined;
+
+                        const label = both ? "Оба ❤️" :
+                            mineOnly ? "Твой выбор" :
+                            partnerOnly ? "Выбор партнёра" :
+                            notRated ? "Не оценено" :
+                            (item.mine === 0 || item.partner === 0)
+                                ? "Пропуск"
+                                : "Пока нет совпадения";
+
+                        const badgeClass = both
+                            ? "badge match"
+                            : notRated
+                                ? "badge pending"
+                                : "badge";
+
+                        return `
+                            <li>
+                                <strong>${escapeHtml(item.name)}</strong>
+                                <span class="${badgeClass}">${label}</span>
+                            </li>`;
                     }).join("")}
                 </ul>
+
                 <button class="primary" id="choose-button">Продолжить выбор</button>
-                <button class="secondary" id="gender-button">Сменить список</button>
+                <button class="secondary" id="switch-gender-button">
+                    Посмотреть ${gender === "boy" ? "женские" : "мужские"} имена
+                </button>
+                <button class="secondary" id="room-button">Вернуться в комнату</button>
             </section>`;
+
         document.getElementById("choose-button").onclick = chooseGender;
-        document.getElementById("gender-button").onclick = chooseGender;
+
+        document.getElementById("switch-gender-button").onclick = () => {
+            gender = gender === "boy" ? "girl" : "boy";
+            showResults();
+        };
+
+        document.getElementById("room-button").onclick = readyScreen;
     } catch (error) {
         showError(error);
     }
 }
 
 async function boot() {
-    if (SUPABASE_URL.startsWith("ВСТАВЬ") || SUPABASE_KEY.startsWith("ВСТАВЬ")) {
+    if (SUPABASE_URL.startsWith("ВСТАВЬ") ||
+        SUPABASE_KEY.startsWith("ВСТАВЬ")) {
         screen.innerHTML = `
             <section class="panel">
                 <h2>Подключим базу</h2>
@@ -486,6 +568,7 @@ async function boot() {
         if (saved?.roomId) {
             room = { id: saved.roomId, code: saved.code };
             displayName = saved.displayName;
+
             try {
                 await refreshRoom();
                 return;
@@ -503,7 +586,12 @@ async function boot() {
             home();
         }
     } catch (error) {
-        screen.innerHTML = `<section class="panel"><h2>Не удалось подключиться</h2><p class="error">${escapeHtml(error.message)}</p><button class="primary" onclick="location.reload()">Повторить</button></section>`;
+        screen.innerHTML = `
+            <section class="panel">
+                <h2>Не удалось подключиться</h2>
+                <p class="error">${escapeHtml(error.message)}</p>
+                <button class="primary" onclick="location.reload()">Повторить</button>
+            </section>`;
     }
 }
 
